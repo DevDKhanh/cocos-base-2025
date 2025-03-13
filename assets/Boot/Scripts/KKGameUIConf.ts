@@ -11,6 +11,7 @@ export const KKBundleConf = {
   Load: "KKLoadBundle",
   Hall: "KKHallBundle",
   Common: "KKCommonBundle",
+  Game01: "KKGame01Bundle",
   //@bundle
 };
 
@@ -24,6 +25,11 @@ export const KKLayerConf = {
     bundle: KKBundleConf.Hall,
     name: "KKHallLayer",
     cacheMode: UICacheMode.Stay,
+  },
+
+  Game01: <IUIConfig>{
+    bundle: KKBundleConf.Game01,
+    name: "KKGame01Layer",
   },
 
   //@layer
@@ -95,4 +101,13 @@ export const KKHallPopupConf = {
   },
 
   //@hall_popup
+};
+
+export const KKGame01PopupConf = {
+  Help: <IUIConfig>{
+    bundle: KKBundleConf.Game01,
+    name: "KKHelpPopup",
+    cacheMode: UICacheMode.Cache,
+  },
+  //@game01_popup
 };
