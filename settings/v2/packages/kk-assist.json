@@ -1,0 +1,8 @@
+{
+  "__version__": "1.0.0",
+  "kk": {
+    "prefix": "KK",
+    "codeInfo": "{\"time\":\"3/13/2025, 10:36:29 AM\",\"result\":[{\"name\":\"Số dòng chú thích\",\"num\":692},{\"name\":\"Số dòng trống\",\"num\":715},{\"name\":\"Số dòng mã\",\"num\":2497},{\"name\":\"Tổng số dòng\",\"num\":3904}]}",
+    "extInfo": "{\"time\":\"3/13/2025, 10:36:28 AM\",\"result\":{\".ts\":{\"num\":45,\"size\":112165},\".meta\":{\"num\":108,\"size\":62615},\".scene\":{\"num\":1,\"size\":8610},\".prefab\":{\"num\":13,\"size\":405276},\".png\":{\"num\":15,\"size\":78100},\".pac\":{\"num\":2,\"size\":80},\".jpg\":{\"num\":1,\"size\":7373}}}"
+  }
+}
