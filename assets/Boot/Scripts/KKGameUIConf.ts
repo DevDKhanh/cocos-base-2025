@@ -12,6 +12,7 @@ export const KKBundleConf = {
   Hall: "KKHallBundle",
   Common: "KKCommonBundle",
   Game01: "KKGame01Bundle",
+  MutilLanguage: "KKMutilLanguageBundle",
   //@bundle
 };
 
@@ -30,6 +31,12 @@ export const KKLayerConf = {
   Game01: <IUIConfig>{
     bundle: KKBundleConf.Game01,
     name: "KKGame01Layer",
+  },
+
+  MutilLanguage: <IUIConfig>{
+    bundle: KKBundleConf.MutilLanguage,
+    name: "KKMutilLanguageLayer",
+    cacheMode: UICacheMode.Stay,
   },
 
   //@layer

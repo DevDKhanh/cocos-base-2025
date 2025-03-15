@@ -15,6 +15,7 @@ import {
   UITransform,
   SpriteFrame,
 } from "cc";
+import kk from "../kk";
 import { LayerBase } from "../ui/LayerBase";
 import {
   IUIConfig,
@@ -28,54 +29,17 @@ import { PopupBase } from "../ui/PopupBase";
 import { UIBase } from "../ui/UIBase";
 import AsyncHelper from "../tools/AsyncHelper";
 import CocosHelper from "../tools/CocosHelper";
-import DebugHelper from "../tools/DebugHelper";
-import { LayerUI } from "../layer/LayerUI";
-import { LayerNotify } from "../layer/LayerNotify";
-import { LayerPopUp } from "../layer/LayerPopup";
-import { LayerType } from "../layer/LayerManager";
-import { LayerDialog } from "../layer/LayerDialog";
 
 export default class UIManager {
   //////////////////////////////////////////// Layer ////////////////////////////////////////////
-  private _curLayerConf: IUIConfig = null;
-  private _root: Node = null;
-  private _layer: Node = null;
-  private _notify: Node = null;
-  private _popup: Node = null;
-  private _dialog: Node = null;
-
-  init() {
-    this._root = CocosHelper.getRoot();
-  }
-
-  updateUI() {
-    setTimeout(() => {
-      this._layer = this._root.getChildByName(LayerUI.name);
-      this._notify = this._root.getChildByName(LayerNotify.name);
-      this._popup = this._root.getChildByName(LayerPopUp.name);
-      this._dialog = this._root.getChildByName(LayerDialog.name);
-    }, 0);
-  }
-
-  root() {
-    return this._root;
-  }
-
-  layer() {
-    return {
-      ui: this._layer,
-      notify: this._notify,
-      popup: this._popup,
-      dialog: this._dialog,
-    };
-  }
+  private _curLayerConf: IUIConfig;
 
   getCurLayerConf() {
     return this._curLayerConf;
   }
 
   getCurLayer() {
-    return this._layer.getChildByName(this._curLayerConf.name);
+    return kk.godNode.getChildByName(this._curLayerConf.name);
   }
 
   /**
@@ -95,22 +59,22 @@ export default class UIManager {
     T._curLayerConf = newConf;
 
     if (newConf.cacheMode == UICacheMode.Stay) {
-      let layer = this._layer.getChildByName(newConf.name);
+      let layer = kk.godNode.getChildByName(newConf.name);
       if (layer) {
         layer.active = true;
         let scptName = newConf.script ? newConf.script : newConf.name;
         let scpt = layer.getComponent(scptName) as LayerBase;
         scpt.recvData = data;
         scpt.refresh();
-        DebugHelper.log("show Layer", newConf.name);
+        kk.debugMgr.log("show Layer", newConf.name);
         T._clearLayer(preConf);
         return;
       }
     }
 
     let layer = await T._genUIBaseAsync(newConf, LAYER_PATH, data);
-    layer.parent = this._layer;
-    DebugHelper.log("create Layer", newConf.name);
+    layer.parent = kk.godNode;
+    kk.debugMgr.log("create Layer", newConf.name);
 
     T._clearLayer(preConf);
   }
@@ -125,21 +89,21 @@ export default class UIManager {
     let conf = T._curLayerConf;
     if (conf) {
       if (conf.cacheMode == UICacheMode.Stay) {
-        let layer = this._layer.getChildByName(conf.name);
+        let layer = kk.godNode.getChildByName(conf.name);
         let scptName = conf.script ? conf.script : conf.name;
         let scpt = layer.getComponent(scptName) as LayerBase;
         scpt.recvData = data;
         scpt.refresh();
-        DebugHelper.log("refresh Layer", conf.name);
+        kk.debugMgr.log("refresh Layer", conf.name);
       } else {
-        let delLayer = this._layer.getChildByName(conf.name);
+        let delLayer = kk.godNode.getChildByName(conf.name);
         delLayer.name = "removed";
 
         let layer = await T._genUIBaseAsync(conf, LAYER_PATH, data);
-        layer.parent = this._layer;
+        layer.parent = kk.godNode;
         delLayer.destroy();
 
-        DebugHelper.log("reset Layer", conf.name);
+        kk.debugMgr.log("reset Layer", conf.name);
       }
     }
   }
@@ -163,13 +127,13 @@ export default class UIManager {
 
   private _clearLayer(preConf: IUIConfig) {
     if (preConf) {
-      let layer = this._layer.getChildByName(preConf.name);
+      let layer = kk.godNode.getChildByName(preConf.name);
       if (preConf.cacheMode == UICacheMode.Stay) {
         layer.active = false;
-        DebugHelper.log("hide Layer", preConf.name);
+        kk.debugMgr.log("hide Layer", preConf.name);
       } else {
         layer.destroy();
-        DebugHelper.log("destroy Layer", preConf.name);
+        kk.debugMgr.log("destroy Layer", preConf.name);
       }
     }
   }
@@ -186,14 +150,9 @@ export default class UIManager {
    */
   async showPopupAsync(conf: IUIConfig, data?: any) {
     let T = this;
-    let parent = this._popup;
-
-    if (conf.layer == LayerType.Dialog) {
-      parent = this._dialog;
-    }
 
     let nd = new Node(conf.name);
-    parent.addChild(nd);
+    T.getCurLayer().addChild(nd);
     nd.addComponent(BlockInputEvents);
 
     CocosHelper.addWidget(nd, { left: 0, right: 0, top: 0, bottom: 0 });
@@ -213,7 +172,7 @@ export default class UIManager {
     let scpt = popup.getComponent(scptName) as PopupBase;
     popup.parent = nd;
     scpt.showAnim();
-    DebugHelper.log("show Popup", conf.name);
+    kk.debugMgr.log("show Popup", conf.name);
 
     return new Promise<any>((resolve, reject) => {
       scpt.onDestroyCall = resolve;
@@ -226,7 +185,7 @@ export default class UIManager {
   getPopup(popupConf: IUIConfig, layerConf: IUIConfig = null) {
     if (!layerConf) layerConf = this._curLayerConf;
 
-    let layer = this._layer.getChildByName(layerConf.name);
+    let layer = kk.godNode.getChildByName(layerConf.name);
     if (layer) {
       return layer.getChildByName(popupConf.name);
     }
@@ -238,7 +197,7 @@ export default class UIManager {
    * 关闭所有已展示的弹窗
    */
   closeAllPopup() {
-    let layer = this._layer.getChildByName(this._curLayerConf.name);
+    let layer = kk.godNode.getChildByName(this._curLayerConf.name);
     if (layer) {
       layer.children.forEach((nd, i) => {
         if (nd.name.endsWith("Popup")) {
@@ -250,7 +209,7 @@ export default class UIManager {
 
   _autoRemovePopup(p: Node) {
     p?.destroy();
-    DebugHelper.log("close Popup", p.name);
+    kk.debugMgr.log("close Popup", p.name);
   }
 
   //////////////////////////////////////////// Panel ////////////////////////////////////////////
@@ -260,6 +219,7 @@ export default class UIManager {
 
   //////////////////////////////////////////// Widget ////////////////////////////////////////////
   async createWidgetAsync(conf: IUIConfig, data?: any) {
+    console.log("createWidgetAsync", conf, data);
     return await this._genUIBaseAsync(conf, WIDGET_PATH, data);
   }
 
@@ -298,13 +258,13 @@ export default class UIManager {
    * 屏蔽UI触摸
    */
   banTouch() {
-    let ban = this._layer.getChildByName("_ban");
+    let ban = kk.godNode.getChildByName("_ban");
     if (!ban) {
       let node = new Node("_ban");
       node
         .addComponent(UITransform)
-        .setContentSize(this._layer.getComponent(UITransform).contentSize);
-      this._layer.addChild(node);
+        .setContentSize(kk.godNode.getComponent(UITransform).contentSize);
+      kk.godNode.addChild(node);
       node.addComponent(BlockInputEvents);
     }
   }
@@ -313,7 +273,7 @@ export default class UIManager {
    * 恢复UI触摸
    */
   unbanTouch() {
-    let ban = this._layer.getChildByName("_ban");
+    let ban = kk.godNode.getChildByName("_ban");
     if (ban) ban.destroy();
   }
 }

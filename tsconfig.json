@@ -4,10 +4,9 @@
 
   /* Add your custom configuration here. */
   "compilerOptions": {
-    "strict": false
+    "strict": false,
+    "target": "ES2019"
   },
 
-  "exclude": [
-    "./extensions",
-  ]
+  "exclude": ["./extensions"]
 }

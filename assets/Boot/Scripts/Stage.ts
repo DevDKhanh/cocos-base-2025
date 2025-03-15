@@ -14,9 +14,10 @@ export class Stage extends Component {
   onLoad() {}
 
   start() {
+    const lang = kk.lang.detectLanguage();
     kk.init();
     kk.uiMgr.goLayerAsync(KKLayerConf.Load);
-    kk.gui.initLayer(this.node);
+    kk.lang.loadLanguage(lang);
   }
 }
 

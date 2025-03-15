@@ -3,6 +3,8 @@
  * @author Mortal-Li
  * @created Mon Apr 15 2024 15:29:49 GMT+0800 (中国标准时间)
  */
+export type AssetType<T = Asset> =
+  __private.__types_globals__Constructor<T> | null;
 
 import {
   Asset,
@@ -10,6 +12,7 @@ import {
   Canvas,
   Component,
   Tween,
+  __private,
   assetManager,
   log,
   tween,
@@ -148,6 +151,15 @@ export default class AsyncHelper {
         }
       );
     });
+  }
+
+  get<T extends Asset>(
+    path: string,
+    type?: AssetType<T>,
+    bundleName: string = "resources"
+  ): T | null {
+    var bundle: AssetManager.Bundle = assetManager.getBundle(bundleName)!;
+    return bundle.get(path, type);
   }
 
   /**

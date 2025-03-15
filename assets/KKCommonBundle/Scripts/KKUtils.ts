@@ -27,21 +27,21 @@ export default class KKUtils {
     kk.uiMgr
       .createWidgetAsync(KKCommonWidgetConf.Toast, { msg: msg })
       .then((nd: Node) => {
-        kk.uiMgr.layer().notify.children.forEach((nd, i) => {
+        kk.godNode.children.forEach((nd, i) => {
           if (nd.name == KKCommonWidgetConf.Toast.name)
             nd.position = v3(nd.position.x, nd.position.y + 110, nd.position.z);
         });
-        nd.parent = kk.uiMgr.layer().notify;
+        nd.parent = kk.godNode;
       });
   }
 
   static showLoading(isShow: boolean) {
-    kk.uiMgr.root().getChildByName(KKCommonWidgetConf.Loading.name)?.destroy();
+    kk.godNode.getChildByName(KKCommonWidgetConf.Loading.name)?.destroy();
     if (isShow) {
       kk.uiMgr
         .createWidgetAsync(KKCommonWidgetConf.Loading)
         .then((nd: Node) => {
-          nd.parent = kk.uiMgr.root();
+          nd.parent = kk.godNode;
         });
     }
   }
